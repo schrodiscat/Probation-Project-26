@@ -13,8 +13,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final FirebaseService firebaseService = FirebaseService();
   DateTime selectedDate = DateTime.now();
-
-  // Store the active list locally so navigation is instant
+ 
+ DateTime get normalizedSelectedDate =>
+    DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+  
   List<Task> currentTasks = [];
 
   String _getDayName(int weekday) {
@@ -41,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.analytics_outlined, color: Colors.black87, size: 26),
             onPressed: () {
-              // Instant navigation without awaiting Firestore
+              
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -181,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       final tasks = snapshot.data ?? [];
                       
-                      // Keep currentTasks updated in memory for instant screen opening
+                      
                       currentTasks = tasks;
 
                       tasks.sort((a, b) {

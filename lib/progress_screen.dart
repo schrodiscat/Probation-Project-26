@@ -17,21 +17,13 @@ class ProgressScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+  const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    final currentTodayWeekday = DateTime.now().weekday; 
 
-    // Pastel colors for each day's bar
-    const barColors = [
-      Color(0xFF81C784), // Mon (Green)
-      Color(0xFFE57373), // Tue (Red/Pink)
-      Color(0xFF64B5F6), // Wed (Blue)
-      Color(0xFFE0E0E0), // Thu (Grey)
-      Color(0xFF90A4AE), // Fri (Blue-Grey)
-      Color(0xFFFFD54F), // Sat (Yellow)
-      Color(0xFFE0E0E0), // Sun (Light Grey)
-    ];
-
+    const todayColor = Color(0xFF81C784); 
+    const themeBlueColor = Color(0xFF64B5F6);
     return Scaffold(
-      backgroundColor: const Color(0xFFB5D5E4), // Matches home background
+      backgroundColor: const Color(0xFFB5D5E4), 
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -71,7 +63,7 @@ class ProgressScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                // 1. BADGE & TITLE
+              
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
@@ -110,7 +102,7 @@ class ProgressScreen extends StatelessWidget {
                 const Divider(height: 1, color: Color(0xFFF2F4F7)),
                 const SizedBox(height: 24),
 
-                // 2. THIS WEEK SECTION
+                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -134,40 +126,41 @@ class ProgressScreen extends StatelessWidget {
 
                 const SizedBox(height: 32),
 
-                // 3. BAR CHART DISPLAY
+                
                 SizedBox(
                   height: 180,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: List.generate(7, (index) {
-                      final dayIndex = index + 1; // 1 = Monday ... 7 = Sunday
+                     final dayIndex = index + 1; 
                       final rate = _getCompletionRateForDay(dayIndex);
+                      final isToday = dayIndex == currentTodayWeekday;
                       
-                      // Max bar height is 140px, default min height for empty days is 24px
-                      final barHeight = 24.0 + (rate * 116.0);
+                      
+                      final barHeight = 20.0 + (rate * 120.0);
 
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          // Animated Bar
+                          
                           AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             width: 28,
                             height: barHeight,
                             decoration: BoxDecoration(
-                              color: rate == 0 ? const Color(0xFFEFEFEF) : barColors[index],
+                              color: isToday ? todayColor : themeBlueColor,
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
                           const SizedBox(height: 12),
-                          // Day Label
+                          
                           Text(
                             days[index],
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
-                              color: Colors.grey.shade500,
+                              color: isToday ? Colors.black87 : Colors.grey.shade500,
                             ),
                           ),
                         ],
