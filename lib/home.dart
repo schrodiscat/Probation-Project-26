@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'task_model.dart';
 import 'firebase_service.dart';
+import 'progress_screen.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -29,7 +30,21 @@ class HomeScreen extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Today's tasks"),
+            title: const Text("Today's Tasks"),
+            actions: [
+             IconButton(
+               icon: const Icon(Icons.analytics_outlined),
+               tooltip: "View Progress",
+               onPressed: () {
+                 Navigator.push(
+                 context,
+                 MaterialPageRoute(
+                  builder: (_) => ProgressScreen(tasks: tasks),
+                  ),
+                 );
+               },
+              ),
+            ],
           ),
           body: tasks.isEmpty
               ? const Center(
