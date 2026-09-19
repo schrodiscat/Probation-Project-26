@@ -14,6 +14,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final FirebaseService firebaseService = FirebaseService();
   DateTime selectedDate = DateTime.now();
 
+  // Store the active list locally so navigation is instant
+  List<Task> currentTasks = [];
+
   String _getDayName(int weekday) {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     return days[weekday % 7];
@@ -30,26 +33,22 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFB5D5E4), // Light blue background
+      backgroundColor: const Color(0xFFB5D5E4),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
-          // Progress screen icon in place of bell icon
           IconButton(
             icon: const Icon(Icons.analytics_outlined, color: Colors.black87, size: 26),
-            onPressed: () async {
-             final navigator = Navigator.of(context); // Store navigator reference beforehand
-             final tasks = await firebaseService.getTasksStream(selectedDate).first;
-              if (!mounted) return;
-  
-                navigator.push(
-                  MaterialPageRoute(
-                    builder: (_) => ProgressScreen(tasks: tasks),
-                  ),
-                );
-              }
-          ,
+            onPressed: () {
+              // Instant navigation without awaiting Firestore
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ProgressScreen(tasks: currentTasks),
+                ),
+              );
+            },
           ),
           const SizedBox(width: 8),
         ],
@@ -60,90 +59,85 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-             // 1. MONTH LABEL ON BLUE BACKGROUND
-Text(
-  _getMonthName(selectedDate.month),
-  style: const TextStyle(
-    fontWeight: FontWeight.w900,
-    fontSize: 16,
-    letterSpacing: 0.5,
-    color: Colors.black87,
-  ),
-),
+              Text(
+                _getMonthName(selectedDate.month),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 16,
+                  letterSpacing: 0.5,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    )
+                  ],
+                ),
+                child: SizedBox(
+                  height: 70,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 14,
+                    itemBuilder: (context, index) {
+                      final date = DateTime.now().add(Duration(days: index - 2));
+                      final isSelected = date.year == selectedDate.year &&
+                          date.month == selectedDate.month &&
+                          date.day == selectedDate.day;
 
-const SizedBox(height: 8),
-
-// 2. CALENDAR CARD CONTAINER (Containing only date pills)
-Container(
-  padding: const EdgeInsets.all(12),
-  decoration: BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(20),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withValues(alpha: 0.04),
-        blurRadius: 10,
-        offset: const Offset(0, 4),
-      )
-    ],
-  ),
-  child: SizedBox(
-    height: 70,
-    child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: 14,
-      itemBuilder: (context, index) {
-        final date = DateTime.now().add(Duration(days: index - 2));
-        final isSelected = date.year == selectedDate.year &&
-            date.month == selectedDate.month &&
-            date.day == selectedDate.day;
-
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-              selectedDate = date;
-            });
-          },
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            margin: const EdgeInsets.only(right: 8),
-            width: 48,
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? const Color(0xFF91BCCF)
-                  : const Color(0xFFF2F4F7),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  _getDayName(date.weekday),
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: isSelected ? Colors.black87 : Colors.grey.shade600,
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedDate = date;
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 150),
+                          margin: const EdgeInsets.only(right: 8),
+                          width: 48,
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFF91BCCF)
+                                : const Color(0xFFF2F4F7),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                _getDayName(date.weekday),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: isSelected ? Colors.black87 : Colors.grey.shade600,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "${date.day}",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  "${date.day}",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    ),
-  ),
-),
-
-              // 2. "TODAY" HEADER & ADD BUTTON
+              ),
+              const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -169,10 +163,7 @@ Container(
                   ),
                 ],
               ),
-
               const SizedBox(height: 12),
-
-              // 3. MAIN WHITE CONTAINER FOR TASK CARDS
               Expanded(
                 child: Container(
                   width: double.infinity,
@@ -189,8 +180,10 @@ Container(
                       }
 
                       final tasks = snapshot.data ?? [];
+                      
+                      // Keep currentTasks updated in memory for instant screen opening
+                      currentTasks = tasks;
 
-                      // Auto-sort completed items to bottom
                       tasks.sort((a, b) {
                         if (a.isCompleted == b.isCompleted) return 0;
                         return a.isCompleted ? 1 : -1;
@@ -212,7 +205,7 @@ Container(
                           return Container(
                             margin: const EdgeInsets.only(bottom: 12),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFCBE3ED), // Soft blue task card
+                              color: const Color(0xFFCBE3ED),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: ClipRRect(
@@ -221,7 +214,7 @@ Container(
                                 decoration: const BoxDecoration(
                                   border: Border(
                                     left: BorderSide(
-                                      color: Color(0xFF6B9BB3), // Darker left accent strip
+                                      color: Color(0xFF6B9BB3),
                                       width: 8,
                                     ),
                                   ),
