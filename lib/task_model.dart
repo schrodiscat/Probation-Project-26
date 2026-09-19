@@ -5,6 +5,7 @@ class Task {
   String title;
   bool isCompleted;
   DateTime createdAt;
+  DateTime date;
   String userId;
 
   Task({
@@ -12,6 +13,7 @@ class Task {
     required this.title,
     this.isCompleted = false,
     required this.createdAt,
+    required this.date,
     this.userId = 'guest_user',
   });
 
@@ -20,6 +22,7 @@ class Task {
       'title': title,
       'isCompleted': isCompleted,
       'createdAt': Timestamp.fromDate(createdAt), 
+      'date': Timestamp.fromDate(DateTime(date.year, date.month, date.day)),
       'userId': userId,
     };
   }
@@ -31,6 +34,9 @@ class Task {
       title: data['title'] ?? '',
       isCompleted: data['isCompleted'] ?? false,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
+      date: data['date'] != null
+      ? (data['date'] as Timestamp).toDate()
+      : DateTime.now(),
       userId: data['userId'] ?? 'guest_user',
     );
   }
