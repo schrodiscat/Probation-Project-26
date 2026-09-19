@@ -27,6 +27,13 @@ class HomeScreen extends StatelessWidget {
         }
 
         final tasks = snapshot.data ?? [];
+        tasks.sort((a, b) {
+        if (a.isCompleted == b.isCompleted) {
+          return 0; 
+         }
+        return a.isCompleted ? 1 : -1;
+         }
+         );
 
         return Scaffold(
           appBar: AppBar(
