@@ -65,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             SizedBox(height: 20),
             Text(
-              "Task Manager",
+              "tasks Manager",
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,

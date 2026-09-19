@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
     final FirebaseService firebaseService = FirebaseService();
 
     return StreamBuilder<List<Task>>(
-      stream: firebaseService.getTasksStream(),
+      stream: firebaseService.gettasksStream(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Scaffold(
@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Today's Tasks"),
+            title: const Text("Today's tasks"),
           ),
           body: tasks.isEmpty
               ? const Center(
@@ -46,7 +46,7 @@ class HomeScreen extends StatelessWidget {
                       leading: Checkbox(
                         value: task.isCompleted,
                         onChanged: (_) {
-                          firebaseService.toggleTaskStatus(
+                          firebaseService.toggletaskstatus(
                               task.id, task.isCompleted);
                         },
                       ),
@@ -65,15 +65,15 @@ class HomeScreen extends StatelessWidget {
                         children: [
                           IconButton(
                             icon: const Icon(Icons.edit, color: Colors.blue),
-                            onPressed: () => _showTaskModal(
+                            onPressed: () => _showtasksModal(
                               context: context,
                               service: firebaseService,
-                              taskToEdit: task,
+                              tasksToEdit: task,
                             ),
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete_outline, color: Colors.red),
-                            onPressed: () => firebaseService.deleteTask(task.id),
+                            onPressed: () => firebaseService.deletetasks(task.id),
                           ),
                         ],
                       ),
@@ -81,7 +81,7 @@ class HomeScreen extends StatelessWidget {
                   },
                 ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () => _showTaskModal(
+            onPressed: () => _showtasksModal(
               context: context,
               service: firebaseService,
             ),
@@ -92,14 +92,14 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _showTaskModal({
+  void _showtasksModal({
     required BuildContext context,
     required FirebaseService service,
-    Task? taskToEdit,
+    Task? tasksToEdit,
   }) {
     final formKey = GlobalKey<FormState>();
     final controller = TextEditingController(
-      text: taskToEdit != null ? taskToEdit.title : '',
+      text: tasksToEdit != null ? tasksToEdit.title : '',
     );
 
     showModalBottomSheet(
@@ -122,7 +122,7 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                taskToEdit == null ? 'Add New Task' : 'Edit Task',
+                tasksToEdit == null ? 'Add New tasks' : 'Edit tasks',
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
@@ -130,12 +130,12 @@ class HomeScreen extends StatelessWidget {
                 controller: controller,
                 autofocus: true,
                 decoration: const InputDecoration(
-                  labelText: 'Task Title',
+                  labelText: 'tasks Title',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Please enter a valid task title';
+                    return 'Please enter a valid tasks title';
                   }
                   return null;
                 },
@@ -145,15 +145,15 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
                     final text = controller.text.trim();
-                    if (taskToEdit == null) {
-                      service.addTask(text);
+                    if (tasksToEdit == null) {
+                      service.addtasks(text);
                     } else {
-                      service.updateTaskTitle(taskToEdit.id, text);
+                      service.updatetasksTitle(tasksToEdit.id, text);
                     }
                     Navigator.pop(ctx);
                   }
                 },
-                child: Text(taskToEdit == null ? 'Save Task' : 'Update Task'),
+                child: Text(tasksToEdit == null ? 'Save tasks' : 'Update tasks'),
               ),
             ],
           ),

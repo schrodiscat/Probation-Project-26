@@ -7,7 +7,7 @@ class FirebaseService {
 
   final String currentUserId = 'guest_user';
 
-  Stream<List<Task>> getTasksStream() {
+  Stream<List<Task>> gettasksStream() {
     return _tasksRef
         .where('userId', isEqualTo: currentUserId)
         .orderBy('createdAt', descending: true)
@@ -17,7 +17,7 @@ class FirebaseService {
     });
   }
 
-  Future<void> addTask(String title) async {
+  Future<void> addtasks(String title) async {
     await _tasksRef.add({
       'title': title,
       'isCompleted': false,
@@ -26,15 +26,15 @@ class FirebaseService {
     });
   }
 
-  Future<void> toggleTaskStatus(String id, bool currentStatus) async {
+  Future<void> toggletaskstatus(String id, bool currentStatus) async {
     await _tasksRef.doc(id).update({'isCompleted': !currentStatus});
   }
 
-  Future<void> updateTaskTitle(String id, String newTitle) async {
+  Future<void> updatetasksTitle(String id, String newTitle) async {
     await _tasksRef.doc(id).update({'title': newTitle});
   }
 
-  Future<void> deleteTask(String id) async {
+  Future<void> deletetasks(String id) async {
     await _tasksRef.doc(id).delete();
   }
 }
