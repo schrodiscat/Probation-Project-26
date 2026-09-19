@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.analytics_outlined, color: Colors.black87, size: 26),
+            icon: const Icon(Icons.analytics_outlined, color: Colors.black87, size: 40),
             onPressed: () {
               
               Navigator.push(
@@ -52,12 +52,12 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 20),
         ],
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -65,8 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 _getMonthName(selectedDate.month),
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
-                  fontSize: 16,
-                  letterSpacing: 0.5,
+                  fontSize: 30,
+                  letterSpacing: 3,
                   color: Colors.black87,
                 ),
               ),
@@ -157,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(6),
                       decoration: const BoxDecoration(
-                        color: Color(0xFF91BCCF),
+                        color: Color.fromARGB(255, 103, 156, 179),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.add, color: Colors.white, size: 22),
@@ -228,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   leading: Checkbox(
                                     value: task.isCompleted,
-                                    activeColor: const Color(0xFF6B9BB3),
+                                    activeColor: const Color.fromARGB(255, 159, 188, 203),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(4),
                                     ),
@@ -248,12 +248,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ? TextDecoration.lineThrough
                                           : TextDecoration.none,
                                       color: task.isCompleted
-                                          ? Colors.grey.shade600
+                                          ? const Color.fromARGB(255, 193, 193, 193)
                                           : Colors.black87,
                                     ),
                                   ),
                                   trailing: IconButton(
-                                    icon: Icon(Icons.delete_outline, color: Colors.grey.shade700),
+                                    icon: Icon(Icons.delete_outline, color: const Color.fromARGB(255, 163, 162, 162)),
                                     onPressed: () => firebaseService.deleteTask(task.id),
                                   ),
                                 ),
