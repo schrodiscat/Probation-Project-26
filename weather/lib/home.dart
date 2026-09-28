@@ -63,11 +63,17 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('NIMBUS'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          'NIMBUS',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300, letterSpacing: 2.0),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.favorite),
+            icon: const Icon(Icons.favorite, color: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
@@ -77,55 +83,116 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                labelText: 'Enter city name',
-                border: const OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: _getWeather,
-                ),
-              ),
-              onSubmitted: (_) => _getWeather(),
-            ),
-            const SizedBox(height: 20),
-            if (_isLoading) const CircularProgressIndicator(),
-            if (_errorMessage != null)
-              Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
-            if (_weather != null) ...[
-              Card(
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Text(_weather!.cityName,
-                          style: const TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 10),
-                      Text('${_weather!.temperature.toStringAsFixed(1)} °C',
-                          style: const TextStyle(fontSize: 32)),
-                      const SizedBox(height: 10),
-                      Text(_weather!.condition,
-                          style: const TextStyle(
-                              fontSize: 18, fontStyle: FontStyle.italic)),
-                      const SizedBox(height: 20),
-                      ElevatedButton.icon(
-                        onPressed: _saveToFavorites,
-                        icon: const Icon(Icons.favorite_border),
-                        label: const Text('Add to Favorites'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF355C5B), 
+              Color(0xFF6B8E7B), 
+              Color(0xFFD4B483), 
             ],
-          ],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                
+                TextField(
+                  controller: _controller,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: 'Enter city name',
+                    hintStyle: const TextStyle(color: Colors.white70),
+                    filled: true,
+                    fillColor: Colors.white.withValues(alpha: 0.2),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.search, color: Colors.white),
+                      onPressed: _getWeather,
+                    ),
+                  ),
+                  onSubmitted: (_) => _getWeather(),
+                ),
+                const SizedBox(height: 30),
+                
+                if (_isLoading)
+                  const CircularProgressIndicator(color: Colors.white)
+                else if (_errorMessage != null)
+                  Text(_errorMessage!, style: const TextStyle(color: Colors.redAccent, fontSize: 16))
+                else if (_weather != null)
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          _weather!.cityName,
+                          style: const TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.w300,
+                            color: Colors.white,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          _weather!.condition.toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white70,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        const SizedBox(height: 40),
+                        const Icon(
+                          Icons.wb_sunny_rounded,
+                          size: 100,
+                          color: Color(0xFFF4D06F),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          '${_weather!.temperature.toStringAsFixed(0)}°C',
+                          style: const TextStyle(
+                            fontSize: 80,
+                            fontWeight: FontWeight.w200,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const Spacer(),
+                        ElevatedButton.icon(
+                          onPressed: _saveToFavorites,
+                          icon: const Icon(Icons.favorite_border, color: Colors.redAccent),
+                          label: const Text('Add to Favorites'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black87,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  )
+                else
+                  const Expanded(
+                    child: Center(
+                      child: Text(
+                        'Search for a city to see the weather',
+                        style: TextStyle(color: Colors.white70, fontSize: 16),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );
