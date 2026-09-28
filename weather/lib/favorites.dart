@@ -10,8 +10,25 @@ class FavoritesScreen extends StatelessWidget {
     final FirestoreService firestoreService = FirestoreService();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Favorite Cities')),
-      body: StreamBuilder<QuerySnapshot>(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(title: const Text('Favorite Cities', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300)),
+      backgroundColor: Colors.transparent,
+      elevation: 0, 
+      iconTheme: const IconThemeData(color: Colors.white),),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF355C5B),
+              Color(0xFF6B8E7B),
+              Color(0xFFD4B483),
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: StreamBuilder<QuerySnapshot>(
         stream: firestoreService.getFavoritesStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -44,6 +61,9 @@ class FavoritesScreen extends StatelessWidget {
           );
         },
       ),
-    );
+    ),
+      ),
+      );
+    
   }
 }
