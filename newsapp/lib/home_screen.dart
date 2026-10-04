@@ -16,9 +16,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-      Provider.of<NewsProvider>(context, listen: false).fetchArticles()
-    );
+    Future.microtask((){
+      if (!mounted) return;
+      Provider.of<NewsProvider>(context, listen: false).fetchArticles();
+    });
   }
 
   @override

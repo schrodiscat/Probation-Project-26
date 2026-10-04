@@ -73,12 +73,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                     onPressed: authProvider.isLoading ? null : () async {
-                      bool success = await authProvider.signInWithEmail(_emailController.text, _passwordController.text);
-                      if (success && mounted) {
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
-                      }
-                    },
-                    child: authProvider.isLoading 
+                     bool success = await authProvider.signInWithEmail(_emailController.text, _passwordController.text);
+                     if (!context.mounted) return;
+                     if (success) {
+                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+                     }
+                     },
+                   
+                      child: authProvider.isLoading 
                       ? const CircularProgressIndicator(color: Colors.white)
                       : const Text('Sign In with Email', style: TextStyle(color: Colors.white)),
                   ),
@@ -132,6 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       onPressed: () async {
                         bool success = await authProvider.verifyOTP(_otpController.text);
+                        if (!context.mounted) return;
                         if (success && mounted) {
                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
                         }
