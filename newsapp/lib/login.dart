@@ -144,16 +144,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ],
 
+              const SizedBox(height: 24),
               ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF8A2BE2),
+                  minimumSize: const Size.fromHeight(50),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
                 onPressed: () async {
-              final success = await Provider.of<AuthProvider>(context, listen: false).signInWithGoogle();
-              if (!context.mounted) return;
-              if (success) {
-                Navigator.pushReplacementNamed(context, '/home');
-               }
-              },
-                icon: const Icon(Icons.login),
-                label: const Text('Sign in with Google'),
+                  final success = await Provider.of<AuthProvider>(context, listen: false).signInWithGoogle();
+                  if (!context.mounted) return;
+                  if (success) {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+                  }
+                },
+                icon: const Icon(Icons.login, color: Colors.white),
+                label: const Text('Sign in with Google', style: TextStyle(color: Colors.white)),
               ),
 
                 const SizedBox(height: 20),
