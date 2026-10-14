@@ -144,6 +144,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ],
 
+              ElevatedButton.icon(
+                onPressed: () async {
+              final success = await Provider.of<AuthProvider>(context, listen: false).signInWithGoogle();
+              if (!context.mounted) return;
+              if (success) {
+                Navigator.pushReplacementNamed(context, '/home');
+               }
+              },
+                icon: const Icon(Icons.login),
+                label: const Text('Sign in with Google'),
+              ),
+
                 const SizedBox(height: 20),
                 TextButton(
                   onPressed: () { setState(() { isPhoneLogin = !isPhoneLogin; }); },
